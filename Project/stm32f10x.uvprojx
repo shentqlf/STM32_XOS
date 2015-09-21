@@ -627,11 +627,6 @@
               <FileType>8</FileType>
               <FilePath>..\ebox\Peripherals\iflash.cpp</FilePath>
             </File>
-            <File>
-              <FileName>stm32f10x_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ebox\core\stm32f10x_it.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

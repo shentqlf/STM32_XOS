@@ -1,6 +1,6 @@
 
 #include "ebox.h"
-
+//STM32 RUN IN eBox
 USART uart1(USART1,PA9,PA10);
 
 void setup()
@@ -23,8 +23,6 @@ int main(void)
 		uart1.printf("==============\r\n",x);
 		delay_ms(1000);
 	}
-
-
 }
 
 

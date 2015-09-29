@@ -22,10 +22,8 @@ extern "C"{
 
 
 
-/////////////////////////////////////////
+////////宏定义/////////////////////////////////
 
-	
-	
 
 #define true 0x1
 #define false 0x0
@@ -59,13 +57,16 @@ typedef enum
 #define Interrupts() 		__enable_irq()
 #define noInterrupts() 	__disable_irq()
 	
+///////全局变量、函数///////////////////////////////////////////////
+extern __IO uint32_t millisSeconds;
+
 typedef void (*callbackFun)(void);	 
 	 
 void eBoxInit(void);	
 
 uint32_t millis( void ) ;
-void delay_ms(uint32_t ms);
-void delay_us(uint16_t us);
+void delayMs(uint32_t ms);
+void delayUs(uint16_t us);
 void delayus(uint32_t us);
 
 class GPIO

@@ -201,6 +201,7 @@ void OSTimelySw(void)
 		OSCtxSw();
 	}
 }
+
 INT32U OS_GetTick()
 {
 	return OSTick;
@@ -248,10 +249,12 @@ void Idle_Task(void)
 static	uint32_t totalCount= 0 ;
 static	uint32_t count = 0;	
 static float cpuUsage = 0;
+
 void OS_Idlehook(void)
 {
  
 	uint32_t tick;
+
 	if(totalCount == 0)//只在开机的第一次进入执行
 	{
 		OS_NO_TIMELY_SW();//停止调度器

@@ -15,11 +15,10 @@ This specification is preliminary and is subject to change at any time without n
 
 #include "spi.h"
 
-//#define SPI_NUM 3
-uint8_t SPIClASS::currentDevNum = 0;
 
 SPIClASS::SPIClASS(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin)
 {
+	busy = 0;
 	spi = SPIx;
 	sckPin->mode(AF_PP);
 	mosiPin->mode(AF_PP);
@@ -89,21 +88,45 @@ uint8_t SPIClASS::readConfig(void)
 	return currentDevNum; 
 }
 
-uint8_t SPIClASS::transfer(uint8_t data) 
+
+int8_t SPIClASS::write(uint8_t data)
 {
+  __IO uint8_t dummyByte;
 	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
 	;
 	spi->DR = data;
 	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
 	;
-	return (spi->DR);
-}
+	dummyByte = spi->DR;
 
-void SPIClASS::transfer(uint8_t *data,uint16_t dataln) 
+	return 0;
+}
+int8_t SPIClASS::read(uint8_t* data)
+{
+	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
+	;
+	spi->DR = 0xff;
+	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
+	;
+	*data = spi->DR;
+	
+	return 0;
+}
+uint8_t SPIClASS::read()
+{
+	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
+	;
+	spi->DR = 0xff;
+	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
+	;
+	return(spi->DR);
+	
+}
+int8_t SPIClASS::write(uint8_t *data,uint16_t dataln)
 {
 	__IO uint8_t dummyByte;
 	if(dataln == 0)
-		return;
+		return -1;
 	while(dataln--)
 	{
 		while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
@@ -113,25 +136,37 @@ void SPIClASS::transfer(uint8_t *data,uint16_t dataln)
 			;
 		dummyByte = spi->DR;
 	}
+	return 0;
 }
-
-
-void SPIClASS::transfer(uint8_t dummyByte,uint8_t *rcvdata,uint16_t dataln) 
+int8_t SPIClASS::read(uint8_t *rcvdata,uint16_t dataln)
 {
 	if(dataln == 0)
-		return;
+		return -1;
 	while(dataln--)
 	{
 		while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
 			;
-		spi->DR = dummyByte;
+		spi->DR = 0xff;
 		while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
 			;
 		*rcvdata++ = spi->DR;
 	}
+	return 0;
 }
 
-
+int8_t SPIClASS::getSpiRight(SPICONFIG* spiConfig)
+{
+	while((busy == 1)&&(spiConfig->devNum != readConfig()))
+		delayMs(1);
+	config(spiConfig);
+	busy = 1;
+	return 0;
+}
+int8_t SPIClASS::releaseSpiRight(void)
+{
+	busy = 0;
+	return 0;
+}
 
 
 

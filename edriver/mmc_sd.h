@@ -18,21 +18,17 @@ This specification is preliminary and is subject to change at any time without n
 
 #include "ebox.h"
 
-class SD:public SPIClASS
+class SD
 {
 
 	public:
-			SD(GPIO* cspin,SPI_TypeDef *spi,GPIO* sck,GPIO* miso,GPIO* mosi):SPIClASS(spi,sck,miso,mosi)
+			SD(GPIO* cspin,SPIClASS *pSPI)
 			{
 				cs = cspin;
+				spi = pSPI;
 			}
 			int begin(void);
-			
-			uint8_t wait(void);
-			uint8_t sendCommand(u8 cmd, u32 arg,u8 crc);
-			uint8_t sendCommandNoDeassert(u8 cmd, u32 arg,u8 crc);
 			uint8_t init();
-			int receiveData(u8 *data, u16 len, u8 release);
 			int getCID(u8 *cid_data);
 			int getCSD(u8 *csd_data);
 			u32 getCapacity(void);
@@ -43,6 +39,12 @@ class SD:public SPIClASS
 			u8 readBytes(unsigned long address,unsigned char *buf,unsigned int offset,unsigned int bytes);
 
 
+	private:
+			uint8_t _wait(void);
+			uint8_t _sendCommand(u8 cmd, u32 arg,u8 crc);
+			uint8_t _sendCommandNoDeassert(u8 cmd, u32 arg,u8 crc);
+			int _receiveData(u8 *data, u16 len, u8 release);
+
 
 	public:
 		u8  SD_Type; //SDø®µƒ¿‡–Õ	 
@@ -50,6 +52,7 @@ class SD:public SPIClASS
 	private:
 		GPIO* cs;
 		SPICONFIG SPIDevSDCard;
+		SPIClASS* spi;
 	
 	
 };

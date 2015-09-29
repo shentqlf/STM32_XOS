@@ -62,14 +62,21 @@ class	SPIClASS
 		void config(SPICONFIG* spiConfig);
 		uint8_t readConfig(void);
 		
-		uint8_t transfer(uint8_t data);
-		void transfer(uint8_t *data,uint16_t dataln);
-		void transfer(uint8_t dummyByte,uint8_t *rcvdata,uint16_t dataln);
-		
-	private:
-		static uint8_t currentDevNum;
-		SPI_TypeDef *spi;
+		int8_t  write(uint8_t data);
+		int8_t  write(uint8_t *data,uint16_t dataln);
+	
+		uint8_t read();
+		int8_t  read(uint8_t* data);
+		int8_t  read(uint8_t *rcvdata,uint16_t dataln);
+	public:
+		int8_t getSpiRight(SPICONFIG* spiConfig);
+		int8_t releaseSpiRight(void);
 
+
+	private:
+	  uint8_t currentDevNum;
+		SPI_TypeDef *spi;
+		uint8_t busy;
 };
 /*
 	注意：1.该类的SPI_CLOCK_DIV是由delay_us延时函数控制。略有不准，比硬件SPI会慢很多
@@ -84,8 +91,17 @@ class SOFTSPI
 		void 		begin(SPICONFIG* spiConfig);
 	  void 		config(SPICONFIG* spiConfig);
 		uint8_t readConfig(void);
+		
+		int8_t  write(uint8_t data);
+		int8_t  write(uint8_t *data,uint16_t dataln);
 	
-		uint8_t transfer(uint8_t data);
+		uint8_t read();
+		int8_t  read(uint8_t* data);
+		int8_t  read(uint8_t *rcvdata,uint16_t dataln);
+	public:
+		int8_t getSpiRight(SPICONFIG* spiConfig);
+		int8_t releaseSpiRight(void);
+
 
 	private:
 		GPIO* 	sckPin;
@@ -96,7 +112,17 @@ class SOFTSPI
 		uint8_t bitOrder;
 		uint8_t spidelay;
 	
-		static uint8_t currentDevNum;
+		uint8_t currentDevNum;
+		uint8_t busy;
+	
+		uint8_t transfer0(uint8_t data);
+		uint8_t transfer1(uint8_t data);
+		uint8_t transfer2(uint8_t data);
+		uint8_t transfer3(uint8_t data);
+		uint8_t transfer(uint8_t data);
+	
+
+	
 };
 
 #endif

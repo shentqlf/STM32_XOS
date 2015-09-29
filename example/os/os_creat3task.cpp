@@ -1,10 +1,6 @@
 
 #include "ebox.h"
-#include "w5500.h"
-#include "socket.h"
-#include "udp.h"
 #include "os.h"
-USART uart1(USART1,PA9,PA10);
 
 
 #define TASK_1_STK_SIZE 128
@@ -14,8 +10,8 @@ USART uart1(USART1,PA9,PA10);
 
 static STACK_TypeDef TASK_1_STK[TASK_1_STK_SIZE];
 static STACK_TypeDef TASK_2_STK[TASK_2_STK_SIZE];
-static STACK_TypeDef TASK_3_STK[TASK_1_STK_SIZE];
-static STACK_TypeDef TASK_4_STK[TASK_2_STK_SIZE];
+static STACK_TypeDef TASK_3_STK[TASK_3_STK_SIZE];
+static STACK_TypeDef TASK_4_STK[TASK_4_STK_SIZE];
 
 #define TASK1_PRIO 0
 #define TASK2_PRIO 1

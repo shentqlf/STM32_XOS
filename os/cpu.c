@@ -58,13 +58,13 @@ void SysTickInit()
 }
 
 extern void OSTimelySw(void);//os.c中的定时调度函数
-extern __IO uint32_t millisSeconds;
+extern __IO uint32_t millis_seconds;
 
 #if 1
 void SysTick_Handler(void)
 {
     OS_ENTER_CRITICAL();
-		millisSeconds++;
+		millis_seconds++;
     OSTick++;
 	  OSTimelySw();
     OS_EXIT_CRITICAL();

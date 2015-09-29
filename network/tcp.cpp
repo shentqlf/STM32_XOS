@@ -44,7 +44,7 @@ int TCPCLIENT::connect(u8* IP,uint16 Port)
 		 	DBG("\r\n_socket() return = %d",ret);
 		 break;
 		}
-		delayMs(500);
+		delay_ms(500);
 	}
 	if(i == 0)
 		ret = -1;

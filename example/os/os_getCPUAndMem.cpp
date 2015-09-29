@@ -46,7 +46,7 @@ void task_1()
 	while(1)
 	{
 		uart1.printf("Task 1 Running!!!\r\n");
-		OS_TimeDelay(1000);
+		OS_DelayTimes(1000);
 	}
 }
 void task_2()
@@ -55,7 +55,7 @@ void task_2()
 	{
 		task2count++;
 		uart1.printf("Task 2 Running!!!,runtimes = %d\r\n",task2count);
-		OS_TimeDelay(1000);
+		OS_DelayTimes(1000);
 	}
 
 }
@@ -68,7 +68,7 @@ void task_3()
 		mem = OS_GetStackMaxUsage(TASK_1_STK,TASK_1_STK_SIZE);
 		uart1.printf("cpu = %0.1f%%\r\n",cpu);
 		uart1.printf("mem = %02d%%\r\n",mem);
-		OS_TimeDelay(1000);
+		OS_DelayTimes(1000);
 	}
 
 }

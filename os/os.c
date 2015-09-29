@@ -145,7 +145,7 @@ void OS_TaskResume(PRIO_TypeDef Prio)
 |有关说明:  延时数不得超出TICKS_TypeDef的范围                                           |
 +---------------------------------------------------------------------------------------+
 */
-void OS_TimeDelay(TICKS_TypeDef ticks)
+void OS_DelayTimes(TICKS_TypeDef ticks)
 {
 	INT32U i=0;
 	if(ticks)                           //如果需要延时         

@@ -16,17 +16,17 @@ This specification is preliminary and is subject to change at any time without n
 #include "spi.h"
 
 
-SPI::SPI(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin)
+SPI::SPI(SPI_TypeDef *SPIx,GPIO* p_sck_pin,GPIO* p_miso_pin,GPIO* p_mosi_pin)
 {
 	busy = 0;
 	spi = SPIx;
-	sckPin->mode(AF_PP);
-	mosiPin->mode(AF_PP);
-	misoPin->mode(AF_PP);
+	p_sck_pin->mode(AF_PP);
+	p_miso_pin->mode(AF_PP);
+	p_mosi_pin->mode(AF_PP);
 	
 };
 
-void SPI::begin(SPI_CONFIG_TYPE* spiConfig)
+void SPI::begin(SPI_CONFIG_TYPE* spi_config)
 {		
 	if(spi == SPI1)
 	{	
@@ -41,13 +41,13 @@ void SPI::begin(SPI_CONFIG_TYPE* spiConfig)
 		RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3,ENABLE);
 	}
 
-	config(spiConfig);
+	config(spi_config);
 }
-void SPI::config(SPI_CONFIG_TYPE* spiConfig)
+void SPI::config(SPI_CONFIG_TYPE* spi_config)
 {
 	SPI_InitTypeDef SPI_InitStructure;
 
-	currentDevNum = spiConfig->devNum;
+	current_dev_num = spi_config->dev_num;
 	
 	
 	SPI_Cmd(spi,DISABLE);
@@ -59,25 +59,25 @@ void SPI::config(SPI_CONFIG_TYPE* spiConfig)
 	SPI_InitStructure.SPI_CRCPolynomial = 7; //CRC多项式
 	SPI_InitStructure.SPI_Mode = SPI_Mode_Master; //主机模式
 
-	if(spiConfig->mode == SPI_MODE0)
+	if(spi_config->mode == SPI_MODE0)
 	{
 	  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
 	  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-	} else if(spiConfig->mode == SPI_MODE1)
+	} else if(spi_config->mode == SPI_MODE1)
 	{
 	  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
 	  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
-	} else if(spiConfig->mode == SPI_MODE2)
+	} else if(spi_config->mode == SPI_MODE2)
 	{
 	  SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
 	  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-	} else if(spiConfig->mode == SPI_MODE3)
+	} else if(spi_config->mode == SPI_MODE3)
 	{
 	  SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
 	  SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
 	}
-	SPI_InitStructure.SPI_BaudRatePrescaler = spiConfig->prescaler;
-	SPI_InitStructure.SPI_FirstBit = spiConfig->bit_order; 
+	SPI_InitStructure.SPI_BaudRatePrescaler = spi_config->prescaler;
+	SPI_InitStructure.SPI_FirstBit = spi_config->bit_order; 
 	SPI_Init(spi,&SPI_InitStructure);
 	SPI_Cmd(spi,ENABLE);
 
@@ -85,7 +85,7 @@ void SPI::config(SPI_CONFIG_TYPE* spiConfig)
 
 uint8_t SPI::read_config(void)
 {
-	return currentDevNum; 
+	return current_dev_num; 
 }
 
 
@@ -101,15 +101,20 @@ int8_t SPI::write(uint8_t data)
 
 	return 0;
 }
-int8_t SPI::read(uint8_t* data)
+int8_t SPI::write(uint8_t *data,uint16_t data_length)
 {
-	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
-	;
-	spi->DR = 0xff;
-	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
-	;
-	*data = spi->DR;
-	
+	__IO uint8_t dummyByte;
+	if(data_length == 0)
+		return -1;
+	while(data_length--)
+	{
+		while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
+			;
+		spi->DR = *data++;
+		while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
+			;
+		dummyByte = spi->DR;
+	}
 	return 0;
 }
 uint8_t SPI::read()
@@ -122,43 +127,39 @@ uint8_t SPI::read()
 	return(spi->DR);
 	
 }
-int8_t SPI::write(uint8_t *data,uint16_t dataln)
+int8_t SPI::read(uint8_t* recv_data)
 {
-	__IO uint8_t dummyByte;
-	if(dataln == 0)
-		return -1;
-	while(dataln--)
-	{
-		while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
-			;
-		spi->DR = *data++;
-		while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
-			;
-		dummyByte = spi->DR;
-	}
+	while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
+	;
+	spi->DR = 0xff;
+	while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
+	;
+	*recv_data = spi->DR;
+	
 	return 0;
 }
-int8_t SPI::read(uint8_t *rcvdata,uint16_t dataln)
+
+int8_t SPI::read(uint8_t *recv_data,uint16_t data_length)
 {
-	if(dataln == 0)
+	if(data_length == 0)
 		return -1;
-	while(dataln--)
+	while(data_length--)
 	{
 		while ((spi->SR & SPI_I2S_FLAG_TXE) == RESET)
 			;
 		spi->DR = 0xff;
 		while ((spi->SR & SPI_I2S_FLAG_RXNE) == RESET)
 			;
-		*rcvdata++ = spi->DR;
+		*recv_data++ = spi->DR;
 	}
 	return 0;
 }
 
 int8_t SPI::take_spi_right(SPI_CONFIG_TYPE* spi_config)
 {
-	while((busy == 1)&&(spi_config->devNum != read_config()))
+	while((busy == 1)&&(spi_config->dev_num != read_config()))
 		delay_ms(1);
-	if(spi_config->devNum == read_config())
+	if(spi_config->dev_num == read_config())
 	{
 		busy = 1;
 		return 0;

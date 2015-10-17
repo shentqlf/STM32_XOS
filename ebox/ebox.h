@@ -53,11 +53,12 @@ extern USART uart3;
 
 extern SPI spi1;	
 extern SPI spi2;
-extern SOFTSPI sspi;
+extern SOFTSPI sspi1;
 extern I2C i2c1;
 extern I2C i2c2;
 extern SOFTI2C si2c;
 extern SOFTI2C si2c1;
+extern SOFTI2C si2c2;
 
 extern GPIO PA0;
 extern GPIO PA1;

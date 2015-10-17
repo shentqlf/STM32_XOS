@@ -27,16 +27,16 @@ class TIMERONE
 {
 	public:
 		TIMERONE();
-		void begin(uint32_t Frq);
+		void begin(uint32_t frq);
 		void attach_interrupt(void(*callback)(void));
 		void interrupt(FunctionalState x);
-	
 		void start();
 		void stop();
-		void set_reload(uint16_t Autoreload);
-		void clear_count(void);
-	
+		void reset_frq(uint32_t frq);
+
 	private:
 		void base_init(uint16_t period,uint16_t prescaler);
+		void set_reload(uint16_t autoreload);
+		void clear_count(void);	
 };
 #endif

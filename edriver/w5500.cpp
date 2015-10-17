@@ -21,7 +21,7 @@ void W5500::begin(uint8_t dev_num,u8* mac,u8* ip,u8* subnet,u8* gateway)
   u8 rxsize[MAX_SOCK_NUM] = {2,2,2,2,2,2,2,2};
 	
 
-	spiDevW5500.devNum = dev_num;
+	spiDevW5500.dev_num = dev_num;
 	spiDevW5500.mode = SPI_MODE0;
 	spiDevW5500.prescaler = SPI_CLOCK_DIV2;
 	spiDevW5500.bit_order = SPI_BITODER_MSB;
@@ -29,8 +29,8 @@ void W5500::begin(uint8_t dev_num,u8* mac,u8* ip,u8* subnet,u8* gateway)
 	spi->begin(&spiDevW5500);
 	cs->mode(OUTPUT_PP);
 	cs->set();
-	rstPin->mode(OUTPUT_PP);
-	rstPin->set();
+	rst_pin->mode(OUTPUT_PP);
+	rst_pin->set();
 
 	reset();
 	//ÖĞ¶ÏÆÁ±Î¼Ä´æÆ÷
@@ -58,9 +58,9 @@ void W5500::begin(uint8_t dev_num,u8* mac,u8* ip,u8* subnet,u8* gateway)
 }
 void W5500::reset()
 {
-	rstPin->reset();
+	rst_pin->reset();
 	delay_ms(1);
-	rstPin->set();
+	rst_pin->set();
 	delay_ms(500);
 
 }

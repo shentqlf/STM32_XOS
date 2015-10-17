@@ -37,7 +37,7 @@ This specification is preliminary and is subject to change at any time without n
            
 typedef struct
 {
-	uint8_t devNum;
+	uint8_t dev_num;
 	uint8_t mode;
 	uint16_t prescaler;
 	uint16_t bit_order;
@@ -56,26 +56,23 @@ typedef struct
 class	SPI
 {
 	public:
-		SPI(SPI_TypeDef *SPIx,GPIO* sckPin,GPIO* misoPin,GPIO* mosiPin);
+		SPI(SPI_TypeDef *SPIx,GPIO* p_sck_pin,GPIO* p_miso_pin,GPIO* p_mosi_pin);
 	
-		void begin (SPI_CONFIG_TYPE* SPI_CONFIG_TYPE);
-		void config(SPI_CONFIG_TYPE* SPI_CONFIG_TYPE);
+		void begin (SPI_CONFIG_TYPE* spi_config);
+		void config(SPI_CONFIG_TYPE* spi_config);
 		uint8_t read_config(void);
 		
 		int8_t  write(uint8_t data);
-		int8_t  write(uint8_t *data,uint16_t dataln);
+		int8_t  write(uint8_t *data,uint16_t data_length);
 	
 		uint8_t read();
-		int8_t  read(uint8_t* data);
-		int8_t  read(uint8_t *rcvdata,uint16_t dataln);
+		int8_t  read(uint8_t * recv_data);
+		int8_t  read(uint8_t *recv_data,uint16_t data_length);
 	public:
 		int8_t take_spi_right(SPI_CONFIG_TYPE* spi_config);
 		int8_t release_spi_right(void);
-
-
-	
 	private:
-	  uint8_t currentDevNum;
+	  uint8_t current_dev_num;
 		SPI_TypeDef *spi;
 		uint8_t busy;
 };
@@ -88,20 +85,20 @@ class	SPI
 class SOFTSPI
 {
 	public:
-		SOFTSPI(GPIO* SCKPin,GPIO* MISOPin,GPIO* MOSIPin);
+		SOFTSPI(GPIO* p_sck_pin,GPIO* p_miso_pin,GPIO* p_mosi_pin);
 	
-		void 		begin(SPI_CONFIG_TYPE* spiConfig);
-	  void 		config(SPI_CONFIG_TYPE* spiConfig);
+		void 		begin(SPI_CONFIG_TYPE* spi_config);
+	  void 		config(SPI_CONFIG_TYPE* spi_config);
 		uint8_t read_config(void);
 		
 		int8_t  write(uint8_t data);
-		int8_t  write(uint8_t *data,uint16_t dataln);
+		int8_t  write(uint8_t *data,uint16_t data_length);
 	
 		uint8_t read();
 		int8_t  read(uint8_t* data);
-		int8_t  read(uint8_t *rcvdata,uint16_t dataln);
+		int8_t  read(uint8_t *rcvdata,uint16_t data_length);
 	public:
-		int8_t take_spi_right(SPI_CONFIG_TYPE* spiConfig);
+		int8_t take_spi_right(SPI_CONFIG_TYPE* spi_config);
 		int8_t release_spi_right(void);
 
 
@@ -114,7 +111,7 @@ class SOFTSPI
 		uint8_t bit_order;
 		uint8_t spi_delay;
 	
-		uint8_t currentDevNum;
+		uint8_t current_dev_num;
 		uint8_t busy;
 	
 		uint8_t transfer0(uint8_t data);

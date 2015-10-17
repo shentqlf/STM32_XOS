@@ -22,18 +22,18 @@ TIMERONE::TIMERONE()
 
 
 }
-void TIMERONE::begin(uint32_t Frq)
+void TIMERONE::begin(uint32_t frq)
 {
 	NVIC_InitTypeDef NVIC_InitStructure;
 	uint32_t _period  =0;
 	uint32_t _prescaler = 1;
 	
+	if(frq>=1000000)frq = 1000000;
 	
-	if(Frq>=720000)Frq = 720000;
 	for(;_prescaler <= 0xffff;_prescaler++)
 	{
-		_period = 72000000/_prescaler/Frq;
-		if((0xffff>=_period)&&(_period>=1000))break;
+		_period = 72000000/_prescaler/frq;
+		if((0xffff>=_period))break;
 	}
 
 	base_init(_period,_prescaler);
@@ -48,6 +48,13 @@ void TIMERONE::begin(uint32_t Frq)
 	interrupt(DISABLE);
 	stop();
 }
+void TIMERONE::reset_frq(uint32_t frq)
+{
+	begin(frq);
+	interrupt(ENABLE);
+	start();
+}
+
 void TIMERONE::interrupt(FunctionalState enable)
 {
  TIM_ClearITPendingBit(TIM1 , TIM_FLAG_Update);

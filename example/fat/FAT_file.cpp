@@ -14,7 +14,7 @@ Copyright 2015 shentq. All Rights Reserved.
 
 
 
-extern void attachSDCardToFat(SD* sd);
+extern void attach_sd_to_fat(SD* sd);
 
 
 static FATFS fs;            // Work area (file system object) for logical drive
@@ -103,14 +103,14 @@ void fileOpt()
 }
 void setup()
 {
-	eBoxInit();
+	ebox_init();
 	uart1.begin(9600);
 			uart1.printf("\r\nsystem start!");
 
 	ret = sd.begin(3);
 	if(!ret)
 		uart1.printf("\r\nsdcard init ok!");
-	attachSDCardToFat(&sd);
+	attach_sd_to_fat(&sd);
 
 	res = f_mount(&fs,"0:",1);
 	uart1.printf("res = %d",res);

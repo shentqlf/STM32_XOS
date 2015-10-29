@@ -56,7 +56,6 @@ This specification is preliminary and is subject to change at any time without n
 	}
 #endif
 
-
 uint32_t millis( void )
 {
   return millis_seconds;
